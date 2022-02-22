@@ -4,8 +4,11 @@ class Base {
         this.hillGroup=[];
         this.coinGroup=[];
         this.player.addImage(bike)
-        this.player.scale=1
-        this.player.rotation=0
+        this.player.scale=1;
+        this.player.rotation=0;
+        
+        this.player.setCollider("rectangle",0,50,this.player.width-75,this.player.height/2)
+        this.life=2;
     }
     conrolPlayer(){
         if(keyDown('LEFT_ARROW')){
@@ -17,30 +20,70 @@ class Base {
             this.player.rotation=-10
         }
     }
+    handleCoin(){
+        this.player.overlap(this.coinGroup,function(collector,collected){
+            score+=5;
+            console.log(score)
+            collected.remove()
+        })
+    }
+    handleHill(){
+        this.player.overlap(this.hillGroup,function(collector,collected){
+            this.life-=1;
+            if(this.life<=0){
+                this.gameOver()
+            }
+            collected.remove()
+        })
+    }
+    gameOver(){
+        gameState=2;
+        this.player.remove();
+        this.hillGroup=[];
+        this.coinGroup=[];
+
+    }
    show(){
-       this.conrolPlayer();
-       this.createHill();
-       this.createCoin();
-       this.scaleCoin();
-       this.scaleHill();
-       drawSprites() 
+       if(gameState!=2){
+        this.conrolPlayer();
+        this.createHill();
+        this.createCoin();
+        this.scaleCoin();
+        this.scaleHill();
+        this.handleCoin();
+        this.handleHill();
+        if(score>10){
+        gameState=1;
+        }
+        drawSprites() 
+       }
+      
    }
    createHill(){
        if(frameCount%200==0){
-           var hill=createSprite(random(width/2+75,width/2-75),height/2+50,20,20);
+        var hill=createSprite(random(width/2+75,width/2-75),height/2+50,20,20);
+        hill.debug=true;
+           if(gameState==1){
+            hill.y=height/2-100;
+
+           }
+          
            hill.velocityY=5;
            hill.velocityX=random(-2,2)
            var r=Math.floor(random(0,3))
           // var r=2;
            switch(r){
                case 0:hill.addImage(obs1);
-               hill.scale=0.4;
+               hill.scale=0.5;
+               hill.setCollider("rectangle",0,0,hill.width-50,hill.height/2)
                break;
                case 1:hill.addImage(obs2);
                hill.scale=0.2;
+               hill.setCollider("rectangle",0,0,hill.width-50,hill.height-50)
                break;
                case 2:hill.addImage(obs3);
                hill.scale=0.1;
+               hill.setCollider("rectangle",0,0,hill.width-50,hill.height/2)
                break;
            }
            this.hillGroup.push(hill)
@@ -49,6 +92,10 @@ class Base {
    createCoin(){
     if(frameCount%100==0){
         var coin=createSprite(random(width/2+75,width/2-75),height/2-75,20,20);
+        if(gameState==1){
+            coin.y=height/2-100;
+
+           }
         coin.velocityY=5;
         coin.velocityX=random(-3,3)
         coin.addImage(coinimg);

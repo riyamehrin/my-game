@@ -1,7 +1,9 @@
 var bg,bg2,form,system,code,security;
+var gameState=0;
 var score=0;
 var coinimg;
-var obs1,obs2,obs3,bike
+var obs1,obs2,obs3,bike,go;
+var score=0;
 function preload() {
   bg = loadImage("day.gif");
   bg2 = loadImage("night.gif");
@@ -10,6 +12,7 @@ function preload() {
   obs2= loadImage("obiyas2.png");
   obs3= loadImage("obiyas3.png");
   bike=loadImage("bike.png");
+  go= loadImage("go.jpg");
 }
 
 function setup() {
@@ -21,11 +24,25 @@ function setup() {
 
 function draw() {
   background(0);
-  image(bg,0,0,width,height)
-  player.show()
+  
+  if(gameState==0){
+    image(bg,0,0,width,height)
+    player.show()
+  }else if(gameState==1){
+    console.log("night")
+    image(bg2,0,0,width,height)
+    player.show()
+  }else{
+    image(go,0,0,width,height)
+  }
+  
+ 
 }
 function keyReleased(){
-  if(keyCode==37 || keyCode==38){
-    player.player.rotation=0
+  if(gameState==0 || gameState==1){
+    if(keyCode==37 || keyCode==38){
+      player.player.rotation=0
+    }
   }
+ 
 }

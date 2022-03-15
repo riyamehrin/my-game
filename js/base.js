@@ -9,6 +9,7 @@ class Base {
         
         this.player.setCollider("rectangle",0,50,this.player.width-75,this.player.height/2)
         this.life=2;
+        this.resetButton= createButton("RESTART")
     }
     conrolPlayer(){
         if(keyDown('LEFT_ARROW')){
@@ -27,22 +28,23 @@ class Base {
             collected.remove()
         })
     }
-    handleHill(){
-        this.player.overlap(this.hillGroup,function(collector,collected){
-            this.life-=1;
-            if(this.life<=0){
-                this.gameOver()
-            }
-            collected.remove()
-        })
-    }
     gameOver(){
         gameState=2;
         this.player.remove();
         this.hillGroup=[];
         this.coinGroup=[];
-
+        
     }
+    handleHill(){
+        this.player.overlap(this.hillGroup,function(collector,collected){
+            this.life-=1;
+            if(this.life<=0){
+               gameState=2;
+            }
+            collected.remove()
+        })
+    }
+  
    show(){
        if(gameState!=2){
         this.conrolPlayer();
@@ -52,7 +54,7 @@ class Base {
         this.scaleHill();
         this.handleCoin();
         this.handleHill();
-        if(score>10){
+        if(score>100){
         gameState=1;
         }
         drawSprites() 
@@ -62,7 +64,6 @@ class Base {
    createHill(){
        if(frameCount%200==0){
         var hill=createSprite(random(width/2+75,width/2-75),height/2+50,20,20);
-        hill.debug=true;
            if(gameState==1){
             hill.y=height/2-100;
 

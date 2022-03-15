@@ -33,6 +33,7 @@ function draw() {
     image(bg2,0,0,width,height)
     player.show()
   }else{
+    player.gameOver()
     image(go,0,0,width,height)
   }
   
